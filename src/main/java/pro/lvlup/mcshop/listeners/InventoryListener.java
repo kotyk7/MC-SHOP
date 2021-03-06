@@ -1,5 +1,7 @@
 package pro.lvlup.mcshop.listeners;
 
+import net.minecraft.server.v1_16_R3.BlockPosition;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -10,7 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import pro.lvlup.mcshop.Main;
 import pro.lvlup.mcshop.basic.GuiItem;
 import pro.lvlup.mcshop.basic.Service;
@@ -26,7 +27,7 @@ public class InventoryListener implements Listener {
 		if (e.getCurrentItem() == null) {
 			return;
 		}
-		if (e.getView().getTitle().startsWith(Utils.fixColor("&eZakup Uslugi"))) {
+		if (e.getView().getTitle().startsWith(Utils.fixColor("&eZakup usługi"))) {
 			if (e.getCurrentItem().getType().equals(Material.PAPER)) {
 				e.setCancelled(true);
 				return;
@@ -38,9 +39,8 @@ public class InventoryListener implements Listener {
 			if (service == null) {
 				e.setCancelled(true);
 				p.closeInventory();
-				p.sendMessage("&8&m-------------------&7[&6ITEMSHOP&7]&8&m-------------------");
-				p.sendMessage("&8& &cID uslugi w uslugi.yml musi sie zgadzac z nazwa kolumny - Zglos sie do administratora");
-				p.sendMessage("&8&m-------------------&7[&6ITEMSHOP&7]&8&m-------------------");
+				p.sendMessage("&cZgłoś się do administratora, niepoprawna konfiguracja (patrz konsole)");
+				Bukkit.getLogger().warning("ID usługi w pliku uslugi.yml musi się zgadzać z nazwą kolumny");
 			}
 			ServiceManager.service.put(p.getPlayer(), service.getName());
 			Location newSign = p.getLocation().add(0, 100, 0);
@@ -51,14 +51,19 @@ public class InventoryListener implements Listener {
 			BlockState signState = sign.getState();
 			if (signState instanceof Sign) {
 				final Sign signBlock = (Sign) signState;
+				final Location loc = signBlock.getLocation();
+				final BlockPosition pos = new BlockPosition(loc.getX(), loc.getY(), loc.getZ());
+
 				signBlock.setLine(0, "");
 				signBlock.setLine(1, Utils.fixColor("&4^ WPISZ KOD ^"));
 				signBlock.setLine(2, Utils.fixColor("&7ABY ZAKUPIC"));
 				signBlock.setLine(3, Utils.fixColor("&a&n" + service.getName().toUpperCase()));
+				signBlock.setEditable(true);
+
 				signBlock.update();
 				new BukkitRunnable() {
 					public void run() {
-						OpenSignEditor.openSignEditor(p, signBlock);
+						OpenSignEditor.openSignEditor(p, pos);
 					}
 				}.runTaskLaterAsynchronously(Main.getInst(), 3);
 			}

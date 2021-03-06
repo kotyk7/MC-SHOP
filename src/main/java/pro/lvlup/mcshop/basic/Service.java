@@ -1,15 +1,15 @@
 package pro.lvlup.mcshop.basic;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
-
 import pro.lvlup.mcshop.callback.CodeVerifier;
 import pro.lvlup.mcshop.managers.Config;
+
+import java.util.List;
 
 public class Service {
 	
@@ -90,7 +90,7 @@ public class Service {
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), m);
 			}
 			for (String s : Config.SERVICE$BOUGHT$SUCCESSFULLY) {
-				s = StringUtils.replace(s, "&", "§");
+				s = ChatColor.translateAlternateColorCodes('&', s);
 				s = StringUtils.replace(s, "{SERVICE}", getName().toUpperCase());
 				s = StringUtils.replace(s, "{PLAYER}", e.getPlayer().getName());
 				Bukkit.broadcastMessage(s);
@@ -100,7 +100,7 @@ public class Service {
 		}
 		if (i == 0) {
 			for (String s : Config.SERVICE$BAD$CODE) {
-				s = StringUtils.replace(s, "&", "§");
+				s = ChatColor.translateAlternateColorCodes('&', s);
 				p.sendMessage(s);
 			}
 			
@@ -108,7 +108,7 @@ public class Service {
 		}
 		if (i == 2) {
 			for (String s : Config.SERVICE$CANT$CONNECT$API) {
-				s = StringUtils.replace(s, "&", "§");
+				s = ChatColor.translateAlternateColorCodes('&', s);
 				p.sendMessage(s);
 			}
 		}

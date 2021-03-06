@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.concurrent.TimeoutException;
 
 public class IOUtils {
 
@@ -17,11 +16,8 @@ public class IOUtils {
 			String encoding = con.getContentEncoding();
 			encoding = encoding == null ? "UTF-8" : encoding;
 			body = toString(in, encoding);
-		} catch (TimeoutException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-			
 		}
 		return body;
 	}
@@ -33,6 +29,6 @@ public class IOUtils {
 		while ((length = in.read(buf)) != -1) {
 			b.write(buf, 0, length);
 		}
-		return new String(b.toByteArray(), en);
+		return b.toString(en);
 	}
 }

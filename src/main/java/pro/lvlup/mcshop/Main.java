@@ -1,22 +1,17 @@
 package pro.lvlup.mcshop;
 
-import java.io.File;
-import java.io.IOException;
-
+import io.papermc.lib.PaperLib;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import pro.lvlup.mcshop.basic.Service;
-import pro.lvlup.mcshop.basic.ServiceManager;
-import pro.lvlup.mcshop.commands.ShopCMD;
+import pro.lvlup.mcshop.basic.*;
+import pro.lvlup.mcshop.commands.*;
 import pro.lvlup.mcshop.listeners.*;
-import pro.lvlup.mcshop.managers.Config;
-import pro.lvlup.mcshop.managers.FilesManager;
-import pro.lvlup.mcshop.managers.GuiManager;
-import pro.lvlup.mcshop.utils.Metrics;
-import pro.lvlup.mcshop.utils.Utils;
+import pro.lvlup.mcshop.managers.*;
+import pro.lvlup.mcshop.utils.*;
+
+import java.io.File;
 
 public class Main extends JavaPlugin {
 
@@ -24,15 +19,17 @@ public class Main extends JavaPlugin {
 	private Config config;
 
 	public void onEnable() {
+		PaperLib.suggestPaper(this);
+
 		instance = this;
-		FilesManager.checkFiles();
 		config = new Config(this);
+
+		FilesManager.checkFiles();
 		loadAllServices();
 		registerListeners();
-		getCommand("sklep").setExecutor(new ShopCMD());
 		Utils.infos();
-		loadMetrics();
-		
+
+		getCommand("sklep").setExecutor(new ShopCMD());
 	}
 
 	public void onDisable() {
@@ -68,14 +65,5 @@ public class Main extends JavaPlugin {
 		pm.registerEvents(new SignChangeListener(), this);
 		pm.registerEvents(new PlayerQuitList(), this);
 		pm.registerEvents(new PlayerKickList(), this);
-	}
-	
-	public void loadMetrics(){
-		try {
-	        Metrics metrics = new Metrics(this);
-	        metrics.start();
-	    } catch (IOException e) {
-	        Utils.info("[Metrics] Wystapil blad podczas ladowania statystyk :(");
-	    }
 	}
 }

@@ -1,11 +1,7 @@
 package pro.lvlup.mcshop.commands;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,18 +11,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import pro.lvlup.mcshop.basic.Service;
 import pro.lvlup.mcshop.basic.ServiceManager;
 import pro.lvlup.mcshop.managers.Config;
 import pro.lvlup.mcshop.managers.FilesManager;
 import pro.lvlup.mcshop.utils.Utils;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class ShopCMD implements CommandExecutor {
 	
 	private static List<ItemStack> itemStacks = new ArrayList<>();
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(cmd.getName().equalsIgnoreCase("sklep")) {
@@ -35,23 +34,26 @@ public class ShopCMD implements CommandExecutor {
 				return true;
 			}
 			Player p = (Player) sender;
-			if(!p.isOnGround() && p.isFlying()){
+			if(p.isFlying()){
 				for(String s : Config.SERVICE$ISNT$ON$GROUND){
-					s = Utils.replace(s, "&", "§");
+					s = ChatColor.translateAlternateColorCodes('&', s);
 					p.sendMessage(Utils.fixColor(s));
 				}
 				return true;
 			}
 			openMenu(p);
 			for(String s : Config.SERVICE$WARN$MESSAGE){
-				s = Utils.replace(s, "&", "§");
+				s = ChatColor.translateAlternateColorCodes('&', s);
 				p.sendMessage(Utils.fixColor(s));
 			}
 		}
 		return false;
 	}
 	private void openMenu(Player p) {
-		p.openInventory(fillInv(Bukkit.getServer().createInventory(p, 27, Utils.fixColor("&eZakup Uslugi")), p));
+		p.openInventory(fillInv(
+				Bukkit.getServer().createInventory(p, 27, Utils.fixColor("&eZakup usługi"))
+				, p
+		));
 	}
 	private Inventory fillInv(Inventory inv, Player p) {
 		File f = new File(FilesManager.getPluginDirectory(), "uslugi.yml");
